@@ -11,10 +11,14 @@ from src.config.settings import (
 from src.graph.state import TravelState
 from src.mcp_servers.local import aviation_mcp_call
 from src.utils.async_utils import bump_llm_calls, run_async, truncate
+import logging
+logger = logging.getLogger(__name__)
+
 
 
 def flight_agent(state: TravelState):
-    print("\nINSIDE FLIGHT AGENT\n")
+    logger.debug("flight_agent starting for query=%r", state["user_query"])
+
 
     query = state["user_query"]
 
@@ -22,8 +26,11 @@ def flight_agent(state: TravelState):
         airports = run_async(aviation_mcp_call("list_airports"))
         airlines = run_async(aviation_mcp_call("list_airlines"))
 
-        print("\nAIRPORTS:", airports)
-        print("\nAIRLINES:", airlines)
+        logger.debug(
+            "aviation reference loaded: %d airports, %d airlines",
+            len(airports), len(airlines),
+        )
+
 
         prompt = FLIGHT_AGENT_PROMPT.format(
             query=query,

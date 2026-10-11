@@ -26,7 +26,7 @@ class Credentials:
 
 EMPTY = Credentials()
 
-_current: ContextVar[Credentials] = ContextVar("travelbrain_credentials", default=EMPTY)
+_current: ContextVar[Credentials] = ContextVar("tripgenie_credentials", default=EMPTY)
 
 
 class MissingCredentialsError(RuntimeError):

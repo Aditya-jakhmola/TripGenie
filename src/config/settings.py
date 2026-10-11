@@ -54,6 +54,11 @@ GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
 AIRPORT_DATA_CHAR_LIMIT = int(os.getenv("AIRPORT_DATA_CHAR_LIMIT", "3000"))
 AIRLINE_DATA_CHAR_LIMIT = int(os.getenv("AIRLINE_DATA_CHAR_LIMIT", "3000"))
+TAVILY_RESULT_CHAR_LIMIT = int(os.getenv("TAVILY_RESULT_CHAR_LIMIT", "2000"))
+GEOCODE_USER_AGENT = os.getenv(
+    "GEOCODE_USER_AGENT",
+    "TripGenie/1.0 (set GEOCODE_USER_AGENT in .env to your contact info)",
+)
 
 
 # =========================
@@ -76,7 +81,7 @@ CACHE_ENABLED = (
 # whole life of the process.
 CACHE_RECONNECT_SECONDS = int(os.getenv("CACHE_RECONNECT_SECONDS", "60"))
 
-CACHE_KEY_PREFIX = os.getenv("CACHE_KEY_PREFIX", "travelbrain")
+CACHE_KEY_PREFIX = os.getenv("CACHE_KEY_PREFIX", "tripgenie")
 
 # TTLs in seconds, chosen to match how fast each source actually changes.
 CACHE_TTL_AIRPORTS = int(os.getenv("CACHE_TTL_AIRPORTS", str(7 * 24 * 3600)))
@@ -85,6 +90,7 @@ CACHE_TTL_HOTELS = int(os.getenv("CACHE_TTL_HOTELS", str(6 * 3600)))
 CACHE_TTL_WEATHER = int(os.getenv("CACHE_TTL_WEATHER", str(10 * 60)))
 CACHE_TTL_FORECAST = int(os.getenv("CACHE_TTL_FORECAST", str(3600)))
 CACHE_TTL_DESTINATION = int(os.getenv("CACHE_TTL_DESTINATION", str(24 * 3600)))
+CACHE_TTL_GEOCODE = int(os.getenv("CACHE_TTL_GEOCODE", str(30 * 24 * 3600)))
 
 
 # =========================
@@ -140,3 +146,10 @@ def get_database_url() -> str:
         )
 
     return normalize_database_url(DATABASE_URL)
+
+
+AUTH_COOKIE = os.getenv("AUTH_COOKIE", "tripgenie_auth")
+AUTH_SESSION_TTL_SECONDS = int(os.getenv("AUTH_SESSION_TTL_SECONDS", str(30 * 24 * 3600)))
+PASSWORD_HASH_ITERATIONS = int(os.getenv("PASSWORD_HASH_ITERATIONS", "260000"))
+
+AUTH_SECRET_KEY = os.getenv("AUTH_SECRET_KEY", "")

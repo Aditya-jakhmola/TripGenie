@@ -1,7 +1,5 @@
 """PostgreSQL checkpointer used by LangGraph to persist conversation threads."""
 
-from functools import lru_cache
-
 import psycopg
 from psycopg.rows import dict_row
 
@@ -9,20 +7,35 @@ from langgraph.checkpoint.postgres import PostgresSaver
 
 from src.config.session import require, resolve_database_url
 
+_connections: dict[str, psycopg.Connection] = {}
+_checkpointers: dict[str, PostgresSaver] = {}
 
-@lru_cache(maxsize=4)
+
 def get_connection(database_url: str) -> psycopg.Connection:
-    return psycopg.connect(
-        database_url,
-        autocommit=True,
-        row_factory=dict_row,
-    )
+    connection = _connections.get(database_url)
+
+    if connection is None or connection.closed:
+        connection = psycopg.connect(
+            database_url,
+            autocommit=True,
+            row_factory=dict_row,
+        )
+        _connections[database_url] = connection
+
+        # Any checkpointer built on the old connection is now stale too.
+        _checkpointers.pop(database_url, None)
+
+    return connection
 
 
-@lru_cache(maxsize=4)
 def get_checkpointer(database_url: str) -> PostgresSaver:
-    checkpointer = PostgresSaver(get_connection(database_url))
-    checkpointer.setup()
+    checkpointer = _checkpointers.get(database_url)
+
+    if checkpointer is None:
+        connection = get_connection(database_url)
+        checkpointer = PostgresSaver(connection)
+        checkpointer.setup()
+        _checkpointers[database_url] = checkpointer
 
     return checkpointer
 

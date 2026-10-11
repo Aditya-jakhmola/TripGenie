@@ -13,7 +13,7 @@ import time
 
 from src.config.session import Credentials
 
-SESSION_COOKIE = "travelbrain_session"
+SESSION_COOKIE = "tripgenie_session"
 
 # How long an idle session keeps its keys.
 SESSION_TTL_SECONDS = 12 * 3600

@@ -10,7 +10,16 @@ from src.config.settings import GROQ_MODEL
 
 @lru_cache(maxsize=8)
 def _build_llm(model: str, api_key: str) -> ChatGroq:
-    return ChatGroq(model=model, api_key=api_key)
+    llm = ChatGroq(model=model, api_key=api_key)
+
+    # Groq's free tier enforces tokens-per-minute limits, and one trip
+    # request fires several LLM calls back-to-back (one per agent), so
+    # a brief 429 here is expected, not a bug. Retry with backoff
+    # instead of failing the whole request.
+    return llm.with_retry(
+        stop_after_attempt=4,
+        wait_exponential_jitter=True,
+    )
 
 
 def get_llm() -> ChatGroq:

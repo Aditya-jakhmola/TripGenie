@@ -6,11 +6,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://travelbrain-api.onrender.com/api/:path*"
+      "destination": "https://tripgenie-api.onrender.com/api/:path*"
     },
     {
       "source": "/health",
-      "destination": "https://travelbrain-api.onrender.com/health"
+      "destination": "https://tripgenie-api.onrender.com/health"
     }
   ],
   "headers": [

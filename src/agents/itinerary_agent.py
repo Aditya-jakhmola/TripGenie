@@ -9,11 +9,16 @@ from src.utils.async_utils import bump_llm_calls
 
 
 def itinerary_agent(state: TravelState):
+    route_plan = state.get("route_plan") or {}
+    route_summary = route_plan.get("summary", "No route grouping available.")
+
     prompt = ITINERARY_AGENT_PROMPT.format(
         user_query=state["user_query"],
         flight_results=state["flight_results"],
         hotel_results=state["hotel_results"],
+        attraction_results=state["attraction_results"],
         weather_results=state["weather_results"],
+        route_summary=route_summary,
     )
 
     response = get_llm().invoke([
