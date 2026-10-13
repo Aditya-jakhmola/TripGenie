@@ -150,6 +150,6 @@ def get_database_url() -> str:
 
 AUTH_COOKIE = os.getenv("AUTH_COOKIE", "tripgenie_auth")
 AUTH_SESSION_TTL_SECONDS = int(os.getenv("AUTH_SESSION_TTL_SECONDS", str(30 * 24 * 3600)))
-PASSWORD_HASH_ITERATIONS = int(os.getenv("PASSWORD_HASH_ITERATIONS", "260000"))
+PASSWORD_HASH_ITERATIONS = int(os.getenv("PASSWORD_HASH_ITERATIONS", "600000"))
 
 AUTH_SECRET_KEY = os.getenv("AUTH_SECRET_KEY", "")

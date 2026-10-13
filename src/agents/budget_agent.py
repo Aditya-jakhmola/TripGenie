@@ -50,10 +50,18 @@ def _parse_budget_json(raw: str) -> dict:
         text = text[start:end + 1]
 
     try:
-        return json.loads(text)
+        parsed = json.loads(text)
     except (json.JSONDecodeError, ValueError) as error:
         logger.warning("Could not parse budget JSON: %s", error)
         return dict(_FALLBACK_BUDGET)
+
+    # Valid JSON is not enough: later code calls .get() on this, so a list,
+    # number or null from the model must fall back like any other bad output.
+    if not isinstance(parsed, dict):
+        logger.warning("Budget JSON was a %s, not an object", type(parsed).__name__)
+        return dict(_FALLBACK_BUDGET)
+
+    return parsed
 
 
 def budget_agent(state: TravelState):

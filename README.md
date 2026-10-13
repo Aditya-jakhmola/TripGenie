@@ -181,6 +181,12 @@ python -c "import secrets; print(secrets.token_hex(32))"
 Prefer fields to sentences? Click the sliders icon next to the message box to
 open the trip builder, then choose **Write my prompt**.
 
+   ### Running the tests
+
+```bash
+   uv run python -m unittest discover -s tests -t . -v
+```
+
 ## Troubleshooting
 
 <details>
@@ -231,13 +237,11 @@ running this at scale:
 - **Stateless login tokens.** Sessions survive restarts, but logging out only
   clears the cookie, because there is no server-side revocation list.
 - **Flight information is guidance, not live fares.** It is not a booking engine.
-- **No automated tests yet.**
 - **Anonymous trips are not merged into an account.** Trips saved before logging
   in stay tied to the device.
 
 ## Roadmap
 
-- Automated test suite
 - Public deployment (backend on Render, frontend on Vercel)
 - Real-time alerts
 - Mobile app

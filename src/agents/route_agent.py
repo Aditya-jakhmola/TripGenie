@@ -64,10 +64,17 @@ def _extract_place_names(attraction_results: str) -> list:
 
     try:
         names = json.loads(text)
-        return [str(n) for n in names if isinstance(n, str)][:MAX_PLACES]
     except (json.JSONDecodeError, ValueError) as error:
         logger.warning("Could not parse extracted place names: %s", error)
         return []
+
+    # A bare string would otherwise be iterated letter by letter, and a
+    # number or null would raise, so anything but a list is rejected.
+    if not isinstance(names, list):
+        logger.warning("Place names were a %s, not a list", type(names).__name__)
+        return []
+
+    return [n for n in names if isinstance(n, str)][:MAX_PLACES]
 
 
 def _format_route_summary(clusters: list, unplaced: list) -> str:

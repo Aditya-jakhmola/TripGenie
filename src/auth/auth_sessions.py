@@ -16,6 +16,12 @@ from src.config.settings import AUTH_SECRET_KEY, AUTH_SESSION_TTL_SECONDS
 
 
 def _sign(payload: bytes) -> str:
+    if not AUTH_SECRET_KEY:
+        # Signing with an empty key would produce tokens anyone could forge.
+        raise RuntimeError(
+            "AUTH_SECRET_KEY is not set. Add a long random value to your .env file."
+        )
+
     signature = hmac.new(
         AUTH_SECRET_KEY.encode("utf-8"), payload, hashlib.sha256
     ).digest()
@@ -34,6 +40,10 @@ def create_auth_session(user_id: int) -> str:
 
 
 def get_user_id_for_token(token: str):
+    # With no secret configured nothing can be verified, so nobody is logged in.
+    if not AUTH_SECRET_KEY:
+        return None
+
     if not token or "." not in token:
         return None
 
@@ -47,7 +57,12 @@ def get_user_id_for_token(token: str):
 
     expected_signature = _sign(payload)
 
-    if not hmac.compare_digest(signature, expected_signature):
+    # Compare as bytes: compare_digest raises on non-ASCII str, and the
+    # token comes straight from a client-controlled cookie.
+    if not hmac.compare_digest(
+        signature.encode("utf-8", "replace"),
+        expected_signature.encode("utf-8"),
+    ):
         return None
 
     try:

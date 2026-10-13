@@ -28,17 +28,23 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(password: str, stored: str) -> bool:
+    # Everything that touches the stored value sits inside the try block:
+    # a corrupt salt, a zero iteration count or a non-ASCII digest all
+    # raise, and none of them should ever surface as a server error.
     try:
         iterations_str, salt, digest = stored.split("$")
         iterations = int(iterations_str)
-    except (ValueError, AttributeError):
+
+        candidate = hashlib.pbkdf2_hmac(
+            "sha256",
+            password.encode("utf-8"),
+            bytes.fromhex(salt),
+            iterations,
+        ).hex()
+
+        return hmac.compare_digest(
+            candidate.encode("ascii"),
+            digest.encode("utf-8", "replace"),
+        )
+    except (ValueError, AttributeError, TypeError):
         return False
-
-    candidate = hashlib.pbkdf2_hmac(
-        "sha256",
-        password.encode("utf-8"),
-        bytes.fromhex(salt),
-        iterations,
-    ).hex()
-
-    return hmac.compare_digest(candidate, digest)

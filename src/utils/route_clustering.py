@@ -23,8 +23,18 @@ def cluster_by_day(points: list[dict], num_days: int) -> list[list[dict]]:
 
     coords = [(p["lat"], p["lon"]) for p in points]
 
-    step = max(1, len(coords) // num_days)
-    centroids = [coords[min(i * step, len(coords) - 1)] for i in range(num_days)]
+    # Seed with the first point, then keep picking whichever point is farthest
+    # from every centroid chosen so far. Seeding by position in the list
+    # instead would make the grouping depend on the order the places happen
+    # to arrive in, and two seeds could land in the same neighbourhood.
+    centroids = [coords[0]]
+
+    while len(centroids) < num_days:
+        farthest = max(
+            coords,
+            key=lambda c: min(_distance(c, k) for k in centroids),
+        )
+        centroids.append(farthest)
 
     assignments = [0] * len(coords)
 
