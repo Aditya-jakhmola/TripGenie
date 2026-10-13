@@ -13,11 +13,9 @@
   a budget breakdown and a packing list, with live progress while it works.
 </p>
 
-<!--
-  Add 2-3 screenshots here once you have them, for example:
-  <p align="center"><img src="docs/home.png" width="800" alt="TripGenie home"></p>
-  A README with screenshots gets read; one without usually doesn't.
--->
+<p align="center"><img src="docs/home.png" width="800" alt="TripGenie home page"></p>
+<p align="center"><img src="docs/plan.png" width="800" alt="A finished trip plan with budget breakdown"></p>
+<p align="center"><img src="docs/map.png" width="800" alt="Route map and packing list"></p>
 
 ---
 
