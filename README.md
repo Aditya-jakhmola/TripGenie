@@ -5,6 +5,7 @@
   <img src="https://img.shields.io/badge/FastAPI-009688.svg" alt="FastAPI">
   <img src="https://img.shields.io/badge/LangGraph-multi--agent-7657d9.svg" alt="LangGraph">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue.svg" alt="License"></a>
+  <a href="https://github.com/Aditya-jakhmola/TripGenie/actions/workflows/tests.yml"><img src="https://github.com/Aditya-jakhmola/TripGenie/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
 </p>
 
 <p align="center">
