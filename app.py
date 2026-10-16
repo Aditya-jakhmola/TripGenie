@@ -17,7 +17,7 @@ logger = logging.getLogger("tripgenie")
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -754,9 +754,12 @@ async def health_check(request: Request):
     }
 
 
-@app.get("/favicon.ico")
+@app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    return JSONResponse(content={})
+    return FileResponse(
+        FRONTEND_DIR / "static" / "images" / "logo.png",
+        media_type="image/png",
+    )
 
 
 

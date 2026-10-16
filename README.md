@@ -18,6 +18,7 @@
 <p align="center"><img src="docs/plan.png" width="800" alt="A finished trip plan with budget breakdown"></p>
 <p align="center"><img src="docs/map.png" width="800" alt="Route map and packing list"></p>
 
+ **Live demo:** https://tripgenie-fy38.onrender.com/ (free hosting: the first visit after a quiet period can take about a minute to wake up)
 ---
 
 ## Table of Contents
