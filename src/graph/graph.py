@@ -1,7 +1,5 @@
 """Wires the agents together into the LangGraph workflow."""
 
-from functools import lru_cache
-
 from langgraph.graph import END, START, StateGraph
 
 from src.agents.attraction_agent import attraction_agent
@@ -47,17 +45,21 @@ def build_graph() -> StateGraph:
     return graph
 
 
-@lru_cache(maxsize=4)
-def _compiled_graph(database_url: str):
-    return build_graph().compile(checkpointer=get_checkpointer(database_url))
-
-
 def get_travel_graph():
     """
     Compile the graph against whichever database the current session
-    resolves to. One compiled graph is cached per distinct URL.
+    resolves to.
+
+    Deliberately NOT cached. Compiling takes milliseconds, but a cached
+    compiled graph holds on to its checkpointer, and so to one specific
+    database connection, for the life of the process. When a managed
+    database drops that connection while idle, every later request would
+    then fail until the server was restarted. get_checkpointer() instead
+    returns a checkpointer bound to a connection it has just verified.
     """
 
     require("DATABASE_URL")
 
-    return _compiled_graph(resolve_database_url())
+    return build_graph().compile(
+        checkpointer=get_checkpointer(resolve_database_url())
+    )
